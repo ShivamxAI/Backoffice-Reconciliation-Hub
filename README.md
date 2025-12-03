@@ -127,6 +127,7 @@ Export: Download the final result as an Excel file for reporting.
 
 # 📂 Project Structure
 
+<img width="903" height="358" alt="image" src="https://github.com/user-attachments/assets/3c6e4056-6491-4053-af64-31b52156f602" />
 
 
 
