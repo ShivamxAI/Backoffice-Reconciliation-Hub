@@ -127,19 +127,8 @@ Export: Download the final result as an Excel file for reporting.
 
 ## 📂 Project Structure
 
-reconciliation_project/
-├── config/                 # Main Django settings & URLs
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── core/                   # The main application logic
-│   ├── models.py           # Database Tables (Project, StatementFile, Transaction)
-│   ├── views.py            # Logic for Upload, Matching, and Exporting
-│   ├── forms.py            # File Upload & Project Creation forms
-│   └── templates/core/     # HTML files (Login, Dashboard, Upload)
-├── .env                    # Hidden secrets (Not on GitHub)
-├── .gitignore              # Files to ignore (venv, uploads)
-└── manage.py               # Django command utility
+<img width="935" height="391" alt="image" src="https://github.com/user-attachments/assets/72690c85-4241-4753-835f-6fb4c0fd173b" />
+
 
 
 ## 🛡️ Security
