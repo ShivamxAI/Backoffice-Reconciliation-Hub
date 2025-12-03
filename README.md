@@ -2,9 +2,9 @@
 
 A robust, full-stack financial tool designed to automate the reconciliation of Bank Statements against internal General Ledgers. Built with Django, PostgreSQL, and Pandas, this application replaces error-prone manual spreadsheet workflows with an intelligent, automated pipeline.
 
-# 🚀 Features
+## 🚀 Features
 
-# 1. Project Management Architecture
+## 1. Project Management Architecture
 
 Multi-User Support: Secure Login/Signup system ensures users only see their own data.
 
