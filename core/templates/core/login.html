@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white text-center">
+                <h4>Login</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }} </div>
+                    {% endfor %}
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+</style>
+{% endblock %}

@@ -1,0 +1,9 @@
+date,description,reference,amount
+2025-01-03,ATM Withdrawal,REF12345,-500.0
+2025-01-04,UPI Payment to Amazon,AMZ98765,-1200.5
+2025-01-05,Salary Credit,SAL001,45000.0
+2025-01-06,Coffee Shop,CCF77889,-250.0
+2025-01-07,Electricity Bill,ELEC9001,-3200.75
+2025-01-08 00:00:00,Cheque Issued to Vendor XYZ (Not Cleared),CHQ-0001,-7000.0
+2025-01-09 00:00:00,Accrued Bank Charges (Not Posted),BC-EST-01,-350.0
+2025-01-10 00:00:00,Accrued Interest Income (Not Credited),INT-ACCR-01,500.0

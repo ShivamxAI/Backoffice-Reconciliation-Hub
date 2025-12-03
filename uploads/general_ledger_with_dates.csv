@@ -1,0 +1,6 @@
+Date,Account Name,Account Number,Description,Debit,Credit,Running Balance,Reference,Cost Center
+2025-02-01,Opening Balance,1000,Opening balance,0.0,0.0,80000.0,OB-2025,HQ
+2025-02-02,Sales Revenue,4000,Invoice INV-201,0.0,18000.0,98000.0,INV-201,HQ
+2025-02-03,Accounts Receivable,1200,Customer payment INV-201,18000.0,0.0,80000.0,REC-601,HQ
+2025-02-04,Rent Expense,6000,Office rent Feb,10000.0,0.0,70000.0,RENT-02,HQ
+2025-02-05,Internet Expense,6100,Monthly internet bill,2000.0,0.0,68000.0,NET-02,HQ

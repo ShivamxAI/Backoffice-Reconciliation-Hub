@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Reconciliation Dashboard</h2>
+        <h5 class="text-muted">{{ project.name }}</h5> </div>
+    <div>
+        <a href="{% url 'export_excel' project.id %}" class="btn btn-success me-2">📊 Export Excel</a>
+        <a href="{% url 'reconcile_now' project.id %}" class="btn btn-warning fw-bold">⚡ Run Auto-Reconciliation</a>
+    </div>
+</div>
+
+<form method="post" action="{% url 'match_manually' project.id %}" id="matchForm">
+    {% csrf_token %}
+    
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card border-danger h-100">
+                <div class="card-header bg-danger text-white d-flex justify-content-between">
+                    <span>Bank Breaks</span>
+                    <span id="bankTotal">Selected: 0.00</span>
+                </div>
+                <div class="card-body p-0 table-responsive" style="max-height: 500px;">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th width="40px">Select</th>
+                                <th>Date</th>
+                                <th>Desc</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in bank_breaks %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="bank_ids" value="{{ txn.id }}" 
+                                           class="bank-checkbox form-check-input" 
+                                           data-amount="{{ txn.amount }}">
+                                </td>
+                                <td>{{ txn.date }}</td>
+                                <td><small>{{ txn.description|truncatechars:20 }}</small></td>
+                                <td class="fw-bold">{{ txn.amount }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted">No breaks found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-info h-100">
+                <div class="card-header bg-info text-white d-flex justify-content-between">
+                    <span>Ledger Breaks</span>
+                    <span id="ledgerTotal">Selected: 0.00</span>
+                </div>
+                <div class="card-body p-0 table-responsive" style="max-height: 500px;">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th width="40px">Select</th>
+                                <th>Date</th>
+                                <th>Ref</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in ledger_breaks %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="ledger_ids" value="{{ txn.id }}" 
+                                           class="ledger-checkbox form-check-input" 
+                                           data-amount="{{ txn.amount }}">
+                                </td>
+                                <td>{{ txn.date }}</td>
+                                <td><small>{{ txn.reference }}</small></td>
+                                <td class="fw-bold">{{ txn.amount }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted">No breaks found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="actionBar" class="fixed-bottom bg-dark text-white p-3 shadow-lg" style="display: none;">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0">
+                    Difference: <span id="diffDisplay" class="fw-bold text-white">0.00</span>
+                </h5>
+                <small class="text-muted">Bank Sum vs Ledger Sum</small>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg fw-bold">
+                🔗 Match Selected
+            </button>
+        </div>
+    </div>
+</form>
+
+<hr class="my-5">
+
+<h3>Reconciled History</h3>
+<div class="table-responsive" style="max-height: 400px;">
+    <table class="table table-sm text-muted">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for txn in reconciled_txns %}
+            <tr>
+                <td>{{ txn.statement_file.get_file_type_display }}</td>
+                <td>{{ txn.description }}</td>
+                <td>{{ txn.amount }}</td>
+                <td>
+                    {% if txn.reconciliation_method == 'manual' %}
+                      <span class="badge bg-primary">Manually Reconciled</span>
+                    {% elif txn.reconciliation_method == 'auto' %}
+                      <span class="badge bg-success">Auto Reconciled</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Reconciled</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<hr class="my-5">
+
+<div class="card border-danger mb-5">
+    <div class="card-header bg-danger text-white fw-bold">
+        ⚠️ Danger Zone
+    </div>
+    <div class="card-body">
+        <p>Need to restart? This will delete all files and transactions <strong>for this project only.</strong></p>
+        
+        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
+            🗑️ Wipe Project Data & Reset
+        </button>
+    </div>
+</div>
+
+<div class="modal fade" id="resetModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Reset</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure? This cannot be undone. All data in <strong>{{ project.name }}</strong> will be lost.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                
+                <form action="{% url 'reset_data' project.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Delete Everything</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br><br> 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bankChecks = document.querySelectorAll('.bank-checkbox');
+        const ledgerChecks = document.querySelectorAll('.ledger-checkbox');
+        const bankDisplay = document.getElementById('bankTotal');
+        const ledgerDisplay = document.getElementById('ledgerTotal');
+        const diffDisplay = document.getElementById('diffDisplay');
+        const actionBar = document.getElementById('actionBar');
+
+        function updateTotals() {
+            let bankSum = 0;
+            let ledgerSum = 0;
+            let checkedCount = 0;
+
+            bankChecks.forEach(cb => {
+                if (cb.checked) {
+                    bankSum += parseFloat(cb.getAttribute('data-amount'));
+                    checkedCount++;
+                }
+            });
+
+            ledgerChecks.forEach(cb => {
+                if (cb.checked) {
+                    ledgerSum += parseFloat(cb.getAttribute('data-amount'));
+                    checkedCount++;
+                }
+            });
+
+            bankDisplay.textContent = "Selected: " + bankSum.toFixed(2);
+            ledgerDisplay.textContent = "Selected: " + ledgerSum.toFixed(2);
+            
+            let diff = Math.abs(bankSum - ledgerSum);
+            diffDisplay.textContent = diff.toFixed(2);
+
+            if (checkedCount > 0) {
+                actionBar.style.display = 'block';
+                if (diff < 0.01) { 
+                    diffDisplay.className = "fw-bold text-success";
+                    diffDisplay.textContent = "MATCHED (0.00)";
+                } else {
+                    diffDisplay.className = "fw-bold text-danger";
+                }
+            } else {
+                actionBar.style.display = 'none';
+            }
+        }
+
+        bankChecks.forEach(cb => cb.addEventListener('change', updateTotals));
+        ledgerChecks.forEach(cb => cb.addEventListener('change', updateTotals));
+    });
+</script>
+
+{% endblock %}
