@@ -89,15 +89,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "project_list"
 LOGOUT_REDIRECT_URL = "login"
-
-
-if os.getenv("CREATE_SUPERUSER") == "True":
-    from django.contrib.auth import get_user_model
-
-    User = get_user_model()
-    if not User.objects.filter(username=os.getenv("SU_NAME")).exists():
-        User.objects.create_superuser(
-            username=os.getenv("SU_NAME"),
-            email=os.getenv("SU_EMAIL"),
-            password=os.getenv("SU_PASSWORD")
-        )
