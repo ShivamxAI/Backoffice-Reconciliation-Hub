@@ -31,16 +31,3 @@ urlpatterns = [
     path('project/<int:project_id>/reset/', reset_data, name='reset_data'),
     path('project/<int:project_id>/delete/', delete_project, name='delete_project'),
 ]
-
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-
-try:
-    temp_user = User.objects.get(username="admin")
-    temp_user.is_superuser = True
-    temp_user.is_staff = True
-    temp_user.save()
-    print("TEMP: Admin user promoted to superuser.")
-except Exception as e:
-    print("TEMP: Superuser creation skipped:", e)
