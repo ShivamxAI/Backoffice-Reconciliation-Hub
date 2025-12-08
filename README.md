@@ -97,8 +97,8 @@ DB_PASSWORD=your_db_password
 
 Make sure PostgreSQL is running and you have created a database named reconciliation_db. Then run:
 
-python manage.py makemigrations
-python manage.py migrate
+1. python manage.py makemigrations
+2. python manage.py migrate
 
 
 ### 6. Run the Server
